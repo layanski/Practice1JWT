@@ -29,6 +29,7 @@ List<Product> products = new ArrayList<>(
     public Product saveproduct(@RequestBody Product product){
         products.add(product);
         return product;
+
     }
 }
 
