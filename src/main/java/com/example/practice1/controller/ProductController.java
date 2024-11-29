@@ -1,5 +1,6 @@
 package com.example.practice1.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -20,10 +21,13 @@ List<Product> products = new ArrayList<>(
                 new Product(1,"Mac Pro",2000.0)
         )
 );
+// new added
     @GetMapping
-    public List<Product> getProducts(){
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Product> getProducts() {
         return products;
     }
+
 
     @PostMapping
     public Product saveproduct(@RequestBody Product product){

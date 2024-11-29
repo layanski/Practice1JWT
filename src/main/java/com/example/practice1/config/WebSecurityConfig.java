@@ -31,20 +31,22 @@ public class WebSecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
+//    new added
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(
-                        request -> request
-                                .requestMatchers("register","login").permitAll()
-                                .anyRequest().authenticated()
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/user/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN") // Admin-only routes(new added)
+                        .requestMatchers("/user/**").hasRole("USER")   // User-only routes(new added)
+                        .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
-                .addFilterBefore(jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
+
 
 
     //@Bean

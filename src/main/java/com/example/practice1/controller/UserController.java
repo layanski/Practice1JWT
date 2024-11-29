@@ -4,13 +4,15 @@ package com.example.practice1.controller;
 import com.example.practice1.entity.User;
 import com.example.practice1.repository.UserRepository;
 import com.example.practice1.service.UserService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @RestController
+//new added
+@RequestMapping("/user")
 public class UserController {
 
     private final UserRepository userRepository;
@@ -28,6 +30,7 @@ public class UserController {
         return userService.register(user);
     }
 
+
     @PostMapping("/login")
     public String login(@RequestBody User user) {
         return userService.verify(user);
@@ -37,4 +40,15 @@ public class UserController {
 //        return "failure";
     }
 
+//    new added
+    @GetMapping ("/profile")
+    @PreAuthorize("hasRole('USER')")
+    public String userProfile() {
+        return "User Profile";
+    }
+
+    @GetMapping()
+    public List<User> getAllUser(){
+        return userService.getAllUser();
+    }
 }

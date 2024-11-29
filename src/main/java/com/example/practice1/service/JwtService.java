@@ -14,27 +14,36 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
 
     private String secretKey = null;
 
+
+//    new added
     public String generateToken(User user) {
-        Map<String, Object> claims
-                = new HashMap<>();
+        Map<String, Object> claims = new HashMap<>();
+
+
+        System.out.println("user:" + user);
+        System.out.println("user role: " + user.getRoles());
+//        new added (asign set key)
+        claims.put("roles", user.getRoles().stream()
+                .map(role -> role.getName().name())
+                .collect(Collectors.toSet()));
         return Jwts
                 .builder()
-                .claims()
-                .add(claims)
-                .subject(user.getUserName())
-                .issuer("DCB")
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis()+ 60*10*1000))
-                .and()
+                .setClaims(claims)
+                .setSubject(user.getUserName())
+                .setIssuer("DCB")
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 60 * 10 * 1000))
                 .signWith(generateKey())
                 .compact();
     }
+
 
     private SecretKey generateKey() {
         byte[] decode
